@@ -25,8 +25,8 @@ For convenience, bucket households into categories (e.g., income deciles) and bu
 
 ### Dynamics
 
-Every household has a preference for every vacancy, expressed as a constant hazard $r$, representing the instantaneous probability that they will move to that unit.
-The actual delay until they move to that unit, if it is still vacant, is distributed like $\mathrm{Exp}(r)$, which has mean $1/r$.
+Every household $h$ has a preference for every vacant unit $u$, expressed as a constant hazard $r_{hu}$, representing the instantaneous probability that they will move to that unit.
+The actual delay until they move to that unit, if it is still vacant, is distributed like $\mathrm{Exp}(r_{hu})$, which has mean $1/r_{hu}$.
 If a household moves, they discard all their existing delays to move into vacant units but then immediately restart their search for vacancies.
 
 There is a race for every vacancy.
@@ -36,7 +36,19 @@ If there is more than one vacancy, then the dynamics become more complicated: wh
 ### Implementation
 
 Mathematically, there is a time-varying matrix of times $t_{hu}$ when household $h$ will move into unit $u$, if it is still vacant.
+In practice, this is cumbersome and unnecessary; we can instead proceed from the perspective of each vacancy: when a unit $u$ becomes vacant:
 
-when unit $u$ becomes vacant, each household $h$ draws the time $T_{uh}$ they will move into the unit, if it is still vacant.
-These potential move events are handled in time order.
-A potential move results in an actual move if the unit $u$ is still vacant.
+1. Draw the time until someone moves in, with hazard $\sum_h r_{hu}$.
+1. At that time, select the mover with probability proportional to $r_{hu}$.
+
+> [!CAUTION]
+> This implies that doubling the number of vacancies doubles the probability that a person will move.
+> This is true in the limit of very few vacancies, but something probably doesn't scale after that.
+
+> [!CAUTION]
+> Depending on the parameterization, people might be moving very often.
+> There is no delay upon moving in; that delay is encoded in people's preferences for each unit.
+
+> [!CAUTION]
+> Rework this math to be in the sense of the "buckets"?
+> If people in the buckets are identical, then this is really a stochastic, compartmental model...
