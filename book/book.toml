@@ -2,3 +2,9 @@
 title = "Moving chains"
 authors = ["Scott Olesen"]
 language = "en"
+
+[output.html]
+site-url = "/moving-chains/"
+
+[preprocessor.katex]
+after = ["links"]

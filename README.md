@@ -2,4 +2,5 @@
 
 ## Getting started
 
-See the `Justfile` for workflows
+- See the `Justfile` for workflows
+- Requires `cargo install mdbook-katex`
