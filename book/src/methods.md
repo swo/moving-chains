@@ -41,3 +41,9 @@ What that tenure elapses, the household moves into a new unit $u$, selected from
   At the end of its lifetime, the household is removed.
 - New households are created at some rate.
   New households have characteristics drawn from some distribution.
+
+### Data & calibration
+
+- Draw in-metro dynamics from observed moving chains
+- Select new household characteristics to match the distribution of new tenants
+- Generally figure out how to parameterize everything
