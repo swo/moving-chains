@@ -1,5 +1,12 @@
 # Methods
 
+## Open questions
+
+- Old model conflates household income and unit price
+- People moving "up" in deciles is considered a reflection of their income
+- Track those things separately, but keep them together? Or model increases in income?
+- Make the Markovian assumption clear
+
 ## General conceptual overview
 
 We consider housing *units* and the *households* the occupy those units, for a single metro area.
@@ -47,3 +54,13 @@ What that tenure elapses, the household moves into a new unit $u$, selected from
 - Draw in-metro dynamics from observed moving chains
 - Select new household characteristics to match the distribution of new tenants
 - Generally figure out how to parameterize everything
+
+### Parameters
+
+- Number of household classes (categories, aka, pick a name)
+- Number of unit classes
+- Preferences in a matrix
+- Immigration (household creation) rate overall
+- Immigration proportions by household class
+- Household tenure distribution -- optionally by class
+- Household removal distribution (emigration/death rate) -- optionally by class
