@@ -1,5 +1,12 @@
 # Methods
 
+## Open questions
+
+- Old model conflates household income and unit price
+- People moving "up" in deciles is considered a reflection of their income
+- Track those things separately, but keep them together? Or model increases in income?
+- Make the Markovian assumption clear
+
 ## General conceptual overview
 
 We consider housing *units* and the *households* the occupy those units, for a single metro area.
@@ -13,7 +20,7 @@ Units have one associated property, *price*, reflecting rent(?).
 Households have preferences about units, reflecting things like household income.
 In the simulation, households will move to different units, with certain probabilities and on certain timescales.
 Households can be created, reflecting processes like individuals separating from their previous households or people moving into the metro from other metros.
-Households can be destroyed, reflecting processes like out-migration, combining households, and death.
+Households can be removed, reflecting processes like out-migration, combining households, and death.
 
 We are interested in how the introduction of new vacancies (i.e., via construction of new units), especially of new units at market rates (i.e., higher prices), translates into vacancies at lower prices.
 
@@ -23,20 +30,37 @@ We are interested in how the introduction of new vacancies (i.e., via constructi
 
 For convenience, bucket households into categories (e.g., income deciles) and bucket units into categories (e.g., deciles of the median income of their occupants).
 
-### Dynamics
+### In-metro dynamics
 
-Every household has a preference for every vacancy, expressed as a constant hazard $r$, representing the instantaneous probability that they will move to that unit.
-The actual delay until they move to that unit, if it is still vacant, is distributed like $\mathrm{Exp}(r)$, which has mean $1/r$.
-If a household moves, they discard all their existing delays to move into vacant units but then immediately restart their search for vacancies.
+Every household $h$ has a preference $p_{hu}$ for every vacant unit $u$.
+Every household $h$ has a *tenure* distribution.
+After every move, that household randomly selects a tenure.
+What that tenure elapses, the household moves into a new unit $u$, selected from among the then-vacant units with probability proportional to $p_{hu}$.
+(If $p_{hu} = 0$ for all vacant units $u$, the household is removed, representing a move out of the metro.)
 
-There is a race for every vacancy.
-If there is only one vacancy, then the family with the shortest delay will move in.
-If there is more than one vacancy, then the dynamics become more complicated: while the race for one vacancy is ongoing, another vacancy may open and divert competitors for the first vacancy.
+> [!NOTE]
+> This assumption decouples the vacant stock from households' move times.
+> The presence of more vacancies does not increase anyone's probability of moving.
 
-### Implementation
+### Household creation and removal
 
-Mathematically, there is a time-varying matrix of times $t_{hu}$ when household $h$ will move into unit $u$, if it is still vacant.
+- Every household has a *lifetime*, determined upon household creation.
+  At the end of its lifetime, the household is removed.
+- New households are created at some rate.
+  New households have characteristics drawn from some distribution.
 
-when unit $u$ becomes vacant, each household $h$ draws the time $T_{uh}$ they will move into the unit, if it is still vacant.
-These potential move events are handled in time order.
-A potential move results in an actual move if the unit $u$ is still vacant.
+### Data & calibration
+
+- Draw in-metro dynamics from observed moving chains
+- Select new household characteristics to match the distribution of new tenants
+- Generally figure out how to parameterize everything
+
+### Parameters
+
+- Number of household classes (categories, aka, pick a name)
+- Number of unit classes
+- Preferences in a matrix
+- Immigration (household creation) rate overall
+- Immigration proportions by household class
+- Household tenure distribution -- optionally by class
+- Household removal distribution (emigration/death rate) -- optionally by class
